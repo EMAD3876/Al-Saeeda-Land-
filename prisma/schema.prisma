@@ -1,0 +1,90 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("CUSTOMER") // CUSTOMER, ADMIN, STAFF
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  reviews   reviews[]
+  reservations reservations[]
+}
+
+model categories {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  nameEn    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  menu_items menu_items[]
+}
+
+model menu_items {
+  id          Int      @id @default(autoincrement())
+  name        String
+  nameEn      String?
+  description String?
+  price       Float
+  image       String?
+  categoryId  Int
+  isAvailable Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  category    categories @relation(fields: [categoryId], references: [id])
+}
+
+model reservations {
+  id          Int      @id @default(autoincrement())
+  userId      Int?
+  fullName    String
+  mobile      String
+  dateTime    DateTime
+  guestsCount Int
+  notes       String?
+  status      String   @default("PENDING") // PENDING, CONFIRMED, CANCELLED
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  user        users?   @relation(fields: [userId], references: [id])
+}
+
+model gallery {
+  id        Int      @id @default(autoincrement())
+  title     String?
+  imageUrl  String
+  category  String   @default("GENERAL") // RESTAURANT, BAKERY, RESORT
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model reviews {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  rating    Int      @default(5)
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  user      users    @relation(fields: [userId], references: [id])
+}
+
+model settings {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

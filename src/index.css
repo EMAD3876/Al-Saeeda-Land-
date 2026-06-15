@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #0A4D68;
+  --color-secondary: #088395;
+  --color-accent: #D4AF37;
+  --color-dark: #0F172A;
+  --font-sans: "Cairo", ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  @apply bg-primary text-white font-sans antialiased;
+}
